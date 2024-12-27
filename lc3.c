@@ -2,7 +2,6 @@
 
 #define MEMORY_MAX (1 << 16)
 
-void main() {
   uint16_t memory[MEMORY_MAX]; // 2 ^ 16 memory alocations (65536)
 
   enum 
@@ -48,10 +47,16 @@ void main() {
   };
 
   enum 
-  {
+  
+{
     POS = 1 << 0,
     ZRO = 1 << 1,
     NEG = 1 << 2
-  };
+  
+};
 
+int main() 
+{
+  reg[COND] = ZRO;
 }
+
