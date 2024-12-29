@@ -1,4 +1,13 @@
+#include <stdio.h>
 #include <stdint.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/termios.h>
+#include <sys/mman.h>
 
 #define MEMORY_MAX (1 << 16)
 
@@ -55,8 +64,20 @@
   
 };
 
-int main() 
+int main(int argc, char *argv[])
 {
-  reg[COND] = ZRO;
+  if (argc < 2)
+  {
+    printf("usage: lc3 [img]\n");
+    exit(2);
+  } 
+
+  for (int i = 1; i < argc; ++i)
+  {
+    if (!readimg(argv[j])) {
+      printf("failed to load image: %s\n", argv[j])
+        exit(1);
+    }
+  }
 }
 
