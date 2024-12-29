@@ -79,5 +79,17 @@ int main(int argc, char *argv[])
         exit(1);
     }
   }
+
+  reg[COND] = ZRO;
+  enum { START = 0x3000 };
+  reg[RPC] = START;
+
+  int rung = 1;
+  while (runn) 
+  {
+    uint16_t instruc = mem_read(reg[RPC]++);
+    uint16_t opc = instruc >> 12;
+  }
+
 }
 
