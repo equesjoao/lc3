@@ -187,21 +187,27 @@ int main(int argc, char *argv[])
       }
 
       case OP_NOT:
-      {
+        {
         uint16_t r0 = (instruc >> 9) & 0x7;
         uint16_t r1 = (instruc >> 9) & 0x7;
         reg[r0] = ~reg[r1];
         update_flags(r0);
-      }
+        }
 
       case OP_BR:  
-      {
+        {
        uint16_t offset = sign_extend(instruc & 0x1FF, 9);
        uint16_t cond_flag = (instruc >> 9) & 0x7;
           if (cond_flag & reg[COND]) {
             reg[RPC] += offset;
           }
-      }
+        }
+
+      case OP_JMP:
+        {
+          uint16_t r1 = (instruc >> 6) & 0x7;
+          reg[RPC] = reg[r1];
+        }
 
     }
   }
