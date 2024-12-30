@@ -166,6 +166,7 @@ int main(int argc, char *argv[])
         reg[r0] = mem_read(mem_read(reg[RPC] + offset));
         update_flags(r0);
         break;
+
       case OP_AND:
         r0 = (instruc >> 9) & 0x7;
         r1 = (instruc >> 6) & 0x7;
@@ -180,6 +181,15 @@ int main(int argc, char *argv[])
           reg[r0] = reg[r1] & reg[r2];
         }
         update_flags(r0);
+        break;
+
+      case OP_NOT:
+        r0 = (instruc >> 9) & 0x7;
+        r1 = (instruc >> 9) & 0x7;
+        reg[r0] = ~reg[r1];
+        update_flags(r0);
+        break;
+        
     }
   }
 }
