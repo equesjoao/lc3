@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
   for (int i = 1; i < argc; ++i)
   {
     if (!readimg(argv[j])) {
-      printf("failed to load image: %s\n", argv[j])
+      printf("failed to load image: %s\n", argv[j]);
         exit(1);
     }
   }
@@ -85,11 +85,33 @@ int main(int argc, char *argv[])
   reg[RPC] = START;
 
   int rung = 1;
-  while (runn) 
+  while (rung) 
   {
     uint16_t instruc = mem_read(reg[RPC]++);
     uint16_t opc = instruc >> 12;
   }
-
 }
 
+
+uint16_t sign_extend(uint16_t x, int bitc)
+{
+  if ((x >> (bitc - 1)) & 1) {
+    x |= (0xFFFF << bitc); 
+  }  
+  return x;
+}
+
+void update_flags(uint16_t r)
+{
+  if (reg[r] == 0) 
+  {
+    reg[COND] = ZRO;
+  }
+  else if (reg[r] >> 15) 
+  {
+    reg[COND] = NEG;
+  }
+  else {
+    reg[COND] = POS;
+  }
+}
