@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
     switch (opc) 
     {
       case OP_ADD:
-      {
+        {
         // destination register (DR)
         uint16_t r0 = (instruc >> 9) & 0x7;
         // first operand (SR1)
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
         }
 
         update_flags(r0);
-      }
+        }
 
       case OP_LDI:
       {
@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
       }
 
       case OP_AND:
-      { 
+        { 
         uint16_t r0 = (instruc >> 9) & 0x7;
         uint16_t r1 = (instruc >> 6) & 0x7;
         uint16_t immflag = (instruc >> 5) & 0x1;
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
           reg[r0] = reg[r1] & reg[r2];
         }
         update_flags(r0);
-      }
+        }
 
       case OP_NOT:
         {
@@ -207,6 +207,20 @@ int main(int argc, char *argv[])
         {
           uint16_t r1 = (instruc >> 6) & 0x7;
           reg[RPC] = reg[r1];
+        }
+
+      case JSR:
+        {
+          uint16_t longflag = (instruc >> 1) & 1;
+          reg[GR7] = reg[RPC];
+          if (longflag) {
+            uint16_t longoffset = sign_extend(instruc & 0x7FF, 11);
+            reg[RPC] += longoffset;
+          }
+          else {
+            uint16_t r1 = (instruc >> 6) & 0x7;
+            reg[RPC] = reg[r1];
+          }
         }
 
     }
