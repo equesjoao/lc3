@@ -223,6 +223,14 @@ int main(int argc, char *argv[])
           }
         }
 
+      case OP_LD:
+        {
+          uint16_t r0 = (instruc >> 9) & 0x7;
+          uint16_t offset = sign_extend(instruc & 0x1FF, 9);
+          reg[r0] = mem_read(reg[RPC] + offset);
+          update_flags(r0);
+        }
+
     }
   }
 }
