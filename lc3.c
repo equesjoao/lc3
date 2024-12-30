@@ -84,7 +84,22 @@ void mem_write(uint16_t addr, uint16_t val)
   memory[addr] = val;
 }
 
-
+uint16_t mem_read(uint16_t addr)
+{
+  if (addr == MR_KBSR)
+  {
+    if (check())
+    {
+      memory[MR_KBSR] = (1 << 15);
+      memory[MR_KBSR] = getchar();
+    }
+    else 
+    {
+      memory[MR_KBSR] = 0;
+    }
+  }
+  return memory[addr];
+}
 
 uint16_t sign_extend(uint16_t x, int bitc)
 {
@@ -146,10 +161,25 @@ int main(int argc, char *argv[])
         break;
 
       case OP_LDI:
-        uint16_t r0 = (instruc >> 9) & 0x7;
+        r0 = (instruc >> 9) & 0x7;
         uint16_t offset = sign_extend(instruc & 0x1FF, 9 );
         reg[r0] = mem_read(mem_read(reg[RPC] + offset));
-      update_flags(r0);
+        update_flags(r0);
+        break;
+      case OP_AND:
+        r0 = (instruc >> 9) & 0x7;
+        r1 = (instruc >> 6) & 0x7;
+        uint16_t immflag = (instruc >> 5) & 0x1;
+
+        if (immflag) {
+          uint16_t imm5 = sign_extend(instruc & 0x1F, 5);
+          reg[r0] = reg[r1] & imm5;
+        }
+        else {
+          uint16_t r2 = instruc & 0x7;
+          reg[r0] = reg[r1] & reg[r2];
+        }
+        update_flags(r0);
     }
   }
 }
