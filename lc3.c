@@ -101,6 +101,8 @@ uint16_t mem_read(uint16_t addr)
   return memory[addr];
 }
 
+
+
 uint16_t sign_extend(uint16_t x, int bitc)
 {
   if ((x >> (bitc - 1)) & 1) {
@@ -109,6 +111,17 @@ uint16_t sign_extend(uint16_t x, int bitc)
   return x;
 }
 
+int check() 
+{
+  fd_set readfds;
+  FD_ZERO(&readfds);
+  FD_SET(STDIN_FILENO, &readfds);
+
+  struct timeval timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 0;
+  return select(1, &readfds, NULL, NULL, &timeout) != 0;
+}
 int main(int argc, char *argv[])
 {
   if (argc < 2)
@@ -209,7 +222,7 @@ int main(int argc, char *argv[])
           reg[RPC] = reg[r1];
         }
 
-      case JSR:
+      case OP_JSR:
         {
           uint16_t longflag = (instruc >> 1) & 1;
           reg[GR7] = reg[RPC];
