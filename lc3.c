@@ -101,8 +101,6 @@ uint16_t mem_read(uint16_t addr)
   return memory[addr];
 }
 
-
-
 uint16_t sign_extend(uint16_t x, int bitc)
 {
   if ((x >> (bitc - 1)) & 1) {
@@ -253,6 +251,13 @@ int main(int argc, char *argv[])
           update_flags(r0);
         }
 
+      case OP_LEA:
+        {
+          uint16_t r0 = (instruc >> 9) & 0x7;
+          uint16_t offset = sign_extend(instruc & 0x1FF, 9);
+          reg[r0] = reg[RPC] + offset;
+          update_flags(r0);
+        }
     }
   }
 }
