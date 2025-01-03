@@ -40,7 +40,7 @@
     OP_BR = 0,  // branch
     OP_ADD,     // add
     OP_LD,      // load
-    OP_STI,     // store
+    OP_ST,     // store
     OP_JSR,     // jump register 
     OP_AND,     // and operator
     OP_LDR,     // load register
@@ -48,7 +48,7 @@
     OP_UNU,     // unused
     OP_NOT,     // not operator
     OP_LDI,     // load indirect 
-    OP_STRI,    // store indirect
+    OP_STI,    // store indirect
     OP_JMP,     // jump
     OP_RSV,     // reserved unused
     OP_LEA,     // load effective address
@@ -259,7 +259,14 @@ int main(int argc, char *argv[])
           update_flags(r0);
         }
 
-      case OP_STR:
+      case OP_ST:
+        {
+          uint16_t r0 = (instruc >> 9) & 0x7;
+          uint16_t offset = sign_extend(instruc & 0x1FF, 9);
+          mem_write(mem_read(reg[RPC] + offset), reg[r0]);
+        }
+
+      case OP_STI:
         {
           uint16_t r0 = (instruc >> 9) & 0x7;
           uint16_t offset = sign_extend(instruc & 0x1FF, 9);
