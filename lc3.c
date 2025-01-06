@@ -9,32 +9,30 @@
 #include <sys/termios.h>
 #include <sys/mman.h>
 
-#define MEMORY_MAX (1 << 16)
 
-  uint16_t memory[MEMORY_MAX]; // 2 ^ 16 memory alocations (65536)
+ enum 
+{
+  GR0 = 0, // general registers (GR0 - GR7)
+  GR1, 
+  GR2,
+  GR3,
+  GR4,
+  GR5,
+  GR6,
+  GR7,
+  RPC, // program counter register
+  COND, // condition register
+  COUNT // count register to store loop count in iterative operations
+};
 
-  enum 
-  {
-    GR0 = 0, // general registers (GR0 - GR7)
-    GR1, 
-    GR2,
-    GR3,
-    GR4,
-    GR5,
-    GR6,
-    GR7,
-    RPC, // program counter register
-    COND, // condition register
-    COUNT // count register to store loop count in iterative operations
-  };
 
-  // COUNT storage
-  uint16_t reg[COUNT];
+enum 
+{
+  MR_KBSR = 0xFE00,
+  MB_KBDR = 0xFE02
 
-  // Instruction: command which tells the CPU to do, such as add numbers
-  
-  // Instructions have opcode which indicate kind of task and a set of paramters which provide inputs to the task
-  
+};
+ 
   enum
   {
     OP_BR = 0,  // branch
@@ -74,6 +72,16 @@ enum
   TRAP_HALT = 0x25
 };
 
+#define MEMORY_MAX (1 << 16)
+uint16_t memory[MEMORY_MAX]; // 2 ^ 16 memory alocations (65536)
+
+  // COUNT storage
+  uint16_t reg[COUNT];
+
+  // Instruction: command which tells the CPU to do, such as add numbers
+  
+  // Instructions have opcode which indicate kind of task and a set of paramters which provide inputs to the task
+ 
 void update_flags(uint16_t r)
 {
   if (reg[r] == 0) 
@@ -130,6 +138,7 @@ int check()
   timeout.tv_usec = 0;
   return select(1, &readfds, NULL, NULL, &timeout) != 0;
 }
+
 int main(int argc, char *argv[])
 {
   if (argc < 2)
@@ -283,5 +292,20 @@ int main(int argc, char *argv[])
           mem_write(mem_read(reg[RPC] + offset), reg[r0]);
         }
     }
+
+      
+    switch (instruc & 0xFF) {
+      case TRAP_GETCH:
+        {
+          reg[GR0] = (uint16_t)getchar();
+          update_flags(GRO);
+        }
+       
+      case TRAP_OUT:
+        {
+          putc((char)reg[GRO], stdout);
+          fflush(stdout);
+        }
+    }  
   }
 }
