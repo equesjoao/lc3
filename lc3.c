@@ -9,7 +9,6 @@
 #include <sys/termios.h>
 #include <sys/mman.h>
 
-
  enum 
 {
   GR0 = 0, // general registers (GR0 - GR7)
@@ -298,14 +297,24 @@ int main(int argc, char *argv[])
       case TRAP_GETCH:
         {
           reg[GR0] = (uint16_t)getchar();
-          update_flags(GRO);
+          update_flags(GR0);
         }
        
       case TRAP_OUT:
         {
-          putc((char)reg[GRO], stdout);
+          putc((char)reg[GR0], stdout);
           fflush(stdout);
         }
-    }  
+
+      case TRAP_IN:
+        {
+          printf("Enter a character: ");
+          char c = getchar();
+          putc(c, stdout);
+          fflush(stdout);
+          reg[GR0] = (uint16_t)c;
+          update_flags(GR0);
+        }
+    } 
   }
 }
