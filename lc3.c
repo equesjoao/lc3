@@ -64,6 +64,16 @@
   
 };
 
+enum 
+{
+  TRAP_GETCH = 0x20,
+  TRAP_OUT = 0x21,
+  TRAP_PUTS = 0x22,
+  TRAP_IN = 0x23,
+  TRAP_PUTSP = 0x24,
+  TRAP_HALT = 0x25
+};
+
 void update_flags(uint16_t r)
 {
   if (reg[r] == 0) 
