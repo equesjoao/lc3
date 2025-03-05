@@ -119,6 +119,20 @@ int check() {
   return select(1, &readfds, NULL, NULL, &timeout) != 0;
 }
 
+void read_image_file(FILE *file) {
+  uint16_t origin;
+  fread(&origin, sizeof(origin), 1, file);
+  origin = swap16(origin);
+
+  uint16_t max_read = MEMORY_MAX - origin;
+  uint16_t *p = memory + origin;
+  size_t read = fread(p, sizeof(uint16_t), max_read, file);
+
+  while (read-- > 0) {
+    *p = swap16(*p);
+    ++p;
+  }
+}
 int main(int argc, char *argv[]) {
   if (argc < 2) {
     printf("usage: lc3 [img]\n");
