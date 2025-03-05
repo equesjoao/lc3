@@ -119,6 +119,11 @@ int check() {
   return select(1, &readfds, NULL, NULL, &timeout) != 0;
 }
 
+uint16_t swap16(uint16_t x)
+{
+  return (x << 8) | (x >> 8);
+}
+
 void read_image_file(FILE *file) {
   uint16_t origin;
   fread(&origin, sizeof(origin), 1, file);
